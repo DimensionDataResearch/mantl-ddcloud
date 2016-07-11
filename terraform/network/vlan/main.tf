@@ -17,6 +17,12 @@ resource "ddcloud_vlan" "vlan" {
 output "id" {
     value       = "${ddcloud_vlan.vlan.id}"
 }
-output "id" {
-    value       = "${ddcloud_vlan.vlan.id}"
+output "name" {
+    value       = "${ddcloud_vlan.vlan.name}"
+}
+output "ipv4_base_address" {
+    value       = "${ddcloud_vlan.vlan.ipv4_base_address}"
+}
+output "ipv4_prefix_size" {
+    value       = "${ddcloud_vlan.vlan.ipv4_prefix_size}"
 }

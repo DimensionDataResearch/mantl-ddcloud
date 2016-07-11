@@ -2,5 +2,8 @@
 *.tfstate
 *.tfstate.backup
 
+# Credentials
+credentials.tf
+
 # Cached modules
 .terraform/
