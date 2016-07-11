@@ -8,6 +8,9 @@ resource "ddcloud_networkdomain" "networkdomain" {
     name        = "${var.name}"
     description = "${var.description}"
     datacenter  = "${var.datacenter}"
+
+    # Change this to "advanced" if VIP / load-balancer support is required.
+    plan        = "ESSENTIALS" 
 }
 
 # Outputs

@@ -87,7 +87,18 @@ module "dns" {
  Servers
  *******/
 
- # TODO: Servers.
+module "control-nodes" {
+    source              = "./server/multi"
+    count               = "${var.control_count}"
+
+    role                = "control"
+    name                = "${var.cluster_short_name}"
+    description         = "Control node {} for ${var.cluster_short_name} cluster."
+    admin_password      = "sn4u$$ag3s!"
+
+    networkdomain       = "${module.networkdomain.id}"
+    vlan                = "${module.vlan.id}"
+}
 
 /*************
  Final outputs

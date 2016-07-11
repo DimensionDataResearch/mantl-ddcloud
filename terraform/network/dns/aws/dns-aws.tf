@@ -36,7 +36,7 @@ variable "kubeworker_count" {}
 variable "kubeworker_ips" {}
 
 # Control nodes.
-resource "aws_route53_record" "dns-control" {
+resource "aws_route53_record" "dns-control-node" {
     type    = "A"
     ttl     = 60
     zone_id = "${var.hosted_zone_id}"
@@ -48,19 +48,17 @@ resource "aws_route53_record" "dns-control" {
 }
 
 # Control nodes (group).
-resource "aws_route53_record" "dns-control-group" {
+resource "aws_route53_record" "dns-control" {
     type    = "A"
     ttl     = 60
     zone_id = "${var.hosted_zone_id}"
 
     name    = "control.${var.domain_name}"
-    records = ["${element(split(",", var.control_ips), count.index)}"]
-    
-    count   = "${var.control_count}"
+    records = ["${split(",", var.control_ips)}"]
 }
 
 # Edge (externally-facing) nodes.
-resource "aws_route53_record" "dns-edge" {
+resource "aws_route53_record" "dns-edge-node" {
     type    = "A"
     ttl     = 60
     zone_id = "${var.hosted_zone_id}"
@@ -71,8 +69,18 @@ resource "aws_route53_record" "dns-edge" {
     count   = "${var.edge_count}"
 }
 
+# Edge nodes wildcard (group).
+resource "aws_route53_record" "dns-edge-wildcard" {
+    type    = "A"
+    ttl     = 60
+    zone_id = "${var.hosted_zone_id}"
+
+    name    = "*.${var.domain_name}"
+    records = ["${split(",", var.edge_ips)}"] # TODO: Consider changing this to use a CloudControl VIP.
+}
+
 # Worker nodes.
-resource "aws_route53_record" "dns-worker" {
+resource "aws_route53_record" "dns-worker-node" {
     type    = "A"
     ttl     = 60
     zone_id = "${var.hosted_zone_id}"
@@ -84,7 +92,7 @@ resource "aws_route53_record" "dns-worker" {
 }
 
 # Kubernetes worker nodes.
-resource "aws_route53_record" "dns-kubeworker" {
+resource "aws_route53_record" "dns-kubeworker-node" {
     type    = "A"
     ttl     = 60
     zone_id = "${var.hosted_zone_id}"
@@ -100,17 +108,21 @@ resource "aws_route53_record" "dns-kubeworker" {
 #########
 
 output "control_group_fqdn" {
-    value = "${aws_route53_record.dns-control-group.fqdn}"
+    value = "${aws_route53_record.dns-control.fqdn}"
 }
 
 output "control_fqdns" {
-    value = "${join(\",\", aws_route53_record.dns-control.*.fqdn)}"
+    value = "${join(\",\", aws_route53_record.dns-control-node.*.fqdn)}"
 }
 
 output "edge_fqdns" {
-    value = "${join(\",\", aws_route53_record.dns-edge.*.fqdn)}"
+    value = "${join(\",\", aws_route53_record.dns-edge-node.*.fqdn)}"
 }
 
 output "worker_fqdns" {
-    value = "${join(\",\", aws_route53_record.dns-worker.*.fqdn)}"
+    value = "${join(\",\", aws_route53_record.dns-worker-node.*.fqdn)}"
+}
+
+output "kubeworker_fqdns" {
+    value = "${join(\",\", aws_route53_record.dns-kubeworker-node.*.fqdn)}"
 }
