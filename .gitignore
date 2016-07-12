@@ -7,3 +7,6 @@ credentials.tf
 
 # Cached modules
 .terraform/
+
+# Generated plans
+*.plan
