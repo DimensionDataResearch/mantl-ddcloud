@@ -14,14 +14,20 @@ variable "hosted_zone_id" {}
 # The number of control nodes in the Mantl cluster.
 variable "control_count" {}
 
-# The IPv4 addresses for all the control nodes in the Mantl cluster.
+# The private IPv4 addresses for all the control nodes in the Mantl cluster.
 variable "control_ips" {}
+
+# The public IPv4 addresses for all the control nodes in the Mantl cluster.
+variable "control_public_ips" {}
 
 # The number of edge (externally-facing) nodes in the Mantl cluster.
 variable "edge_count" {}
 
 # The IPv4 addresses for all the edge nodes in the Mantl cluster.
 variable "edge_ips" {}
+
+# The public IPv4 addresses for the edge servers (will be aggregated under a single wildcard record).
+variable "edge_public_ips" {}
 
 # The number of worker nodes in the Mantl cluster.
 variable "worker_count" {}
@@ -54,7 +60,7 @@ resource "aws_route53_record" "dns-control" {
     zone_id = "${var.hosted_zone_id}"
 
     name    = "control.${var.domain_name}"
-    records = ["${split(",", var.control_ips)}"]
+    records = ["${split(",", var.control_public_ips)}"]
 }
 
 # Edge (externally-facing) nodes.
@@ -76,7 +82,7 @@ resource "aws_route53_record" "dns-edge-wildcard" {
     zone_id = "${var.hosted_zone_id}"
 
     name    = "*.${var.domain_name}"
-    records = ["${split(",", var.edge_ips)}"] # TODO: Consider changing this to use a CloudControl VIP.
+    records = ["${split(",", var.edge_public_ips)}"] # TODO: Consider changing this to use a CloudControl VIP.
 }
 
 # Worker nodes.

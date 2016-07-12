@@ -24,72 +24,37 @@ variable "cluster_vlan_address_base" { default = "192.168.17" }
 variable "cluster_vlan_address_start" { default = 20 }
 
 # Automatically start servers after they are deployed?
-variable "server_auto_start" { default = false }
+variable "server_auto_start" { default = true }
+
+# The size of the data volume for all deployed servers in the cluster (should be consistent across nodes, according to Mantl documentation).
+variable "data_disk_size_gb" { default = 20 }
+
+# The initial root password for machines in the cluster (later, we'll use this password to connect via SSH and switch to using a key file).
+variable "cluster_initial_root_password" { default = "sn4uSag3s!" }
 
 # Control nodes.
 variable "control_count" { default = 3 }
 variable "control_cpu_count" { default = 2 }
-variable "control_memory" { default = 8 }
+variable "control_memory_gb" { default = 8 }
 variable "control_address_start" { default = 0 }        # Added to cluster_vlan_address_start
 
 # Edge (public-facing) nodes.
 variable "edge_count" { default = 2 }
 variable "edge_cpu_count" { default = 2 }
-variable "edge_memory" { default = 6 }
+variable "edge_memory_gb" { default = 6 }
 variable "edge_address_start" { default = 5 }
 
 # Worker nodes.
 variable "worker_count" { default = 4 }
 variable "worker_cpu_count" { default = 2 }
-variable "worker_memory" { default = 8 }
+variable "worker_memory_gb" { default = 8 }
 variable "worker_address_start" { default = 10 }        # Added to cluster_vlan_address_start
 
 # Kubernetes worker nodes.
 variable "kubeworker_count" { default = 2 }
 variable "kubeworker_cpu_count" { default = 2 }
-variable "kubeworker_memory" { default = 8 }
+variable "kubeworker_memory_gb" { default = 8 }
 variable "kubeworker_address_start" { default = 15 }    # Added to cluster_vlan_address_start
-
-#########
-# Network
-#########
-
-module "networkdomain" {
-    source              = "./network/networkdomain"
-    
-    name                = "Mantl"
-    description         = "Mantl"
-    datacenter          = "${var.datacenter}"
-}
-module "vlan" {
-    source              = "./network/vlan"
-
-    name                = "Mantl primary VLAN"
-    description         = "Primary VLAN for Mantl."
-    base_address        = "${var.cluster_vlan_address_base}.0"
-    prefix_size         = 24
-
-    networkdomain       = "${module.networkdomain.id}"
-}
-module "dns" {
-    source              = "./network/dns/aws"
-
-    cluster_short_name  = "${var.cluster_short_name}"
-    domain_name         = "${var.subdomain_name}.${var.domain_name}"
-    hosted_zone_id      = "${var.aws_hosted_zone_id}"
-
-    control_count       = "${var.control_count}"
-    control_ips         = "${module.control-nodes.ipv4s}"
-    
-    edge_count          = "${var.edge_count}"
-    edge_ips            = "${module.edge-nodes.ipv4s}"
-    
-    worker_count        = "${var.worker_count}"
-    worker_ips          = "${module.worker-nodes.ipv4s}"
-
-    kubeworker_count    = "${var.kubeworker_count}"
-    kubeworker_ips      = "${module.kubeworker-nodes.ipv4s}"
-}
 
 #########
 # Servers
@@ -102,8 +67,11 @@ module "control-nodes" {
     role                = "control"
     name                = "${var.cluster_short_name}"
     description         = "Control node {} for ${var.cluster_short_name} cluster."
-    admin_password      = "sn4u$$ag3s!"
+    admin_password      = "${var.cluster_initial_root_password}"
     auto_start          = "${var.server_auto_start}"
+
+    memory_gb           = "${var.control_memory_gb}"
+    data_disk_size_gb   = "${var.data_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -117,8 +85,11 @@ module "edge-nodes" {
     role                = "edge"
     name                = "${var.cluster_short_name}"
     description         = "Edge node {} for ${var.cluster_short_name} cluster."
-    admin_password      = "sn4u$$ag3s!"
+    admin_password      = "${var.cluster_initial_root_password}"
     auto_start          = "${var.server_auto_start}"
+
+    memory_gb           = "${var.edge_memory_gb}"
+    data_disk_size_gb   = "${var.data_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -132,8 +103,11 @@ module "worker-nodes" {
     role                = "worker"
     name                = "${var.cluster_short_name}"
     description         = "Worker node {} for ${var.cluster_short_name} cluster."
-    admin_password      = "sn4u$$ag3s!"
+    admin_password      = "${var.cluster_initial_root_password}"
     auto_start          = "${var.server_auto_start}"
+
+    memory_gb           = "${var.worker_memory_gb}"
+    data_disk_size_gb   = "${var.data_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -147,13 +121,76 @@ module "kubeworker-nodes" {
     role                = "kubeworker"
     name                = "${var.cluster_short_name}"
     description         = "Kubernetes worker node {} for ${var.cluster_short_name} cluster."
-    admin_password      = "sn4u$$ag3s!"
+    admin_password      = "${var.cluster_initial_root_password}"
     auto_start          = "${var.server_auto_start}"
+
+    memory_gb           = "${var.kubeworker_memory_gb}"
+    data_disk_size_gb   = "${var.data_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
     ipv4_base           = "${var.cluster_vlan_address_base}"
     ipv4_start          = "${var.cluster_vlan_address_start + var.kubeworker_address_start}"
+}
+
+#########
+# Network
+#########
+
+module "networkdomain" {
+    source                      = "./network/networkdomain"
+    
+    name                        = "Mantl"
+    description                 = "Mantl"
+    datacenter                  = "${var.datacenter}"
+}
+module "vlan" {
+    source                      = "./network/vlan"
+
+    name                        = "Mantl primary VLAN"
+    description                 = "Primary VLAN for Mantl."
+    base_address                = "${var.cluster_vlan_address_base}.0"
+    prefix_size                 = 24
+
+    networkdomain               = "${module.networkdomain.id}"
+}
+module "public-ips" {
+    source                      = "./network/public-ip"
+    
+    control_count               = "${var.control_count}"
+    control_private_ipv4s       = "${module.control-nodes.ipv4s}"
+
+    edge_count                  = "${var.edge_count}"
+    edge_private_ipv4s          = "${module.edge-nodes.ipv4s}"
+
+    worker_count                = "${var.worker_count}"
+    worker_private_ipv4s        = "${module.worker-nodes.ipv4s}"
+
+    kubeworker_count            = "${var.kubeworker_count}"
+    kubeworker_private_ipv4s    = "${module.kubeworker-nodes.ipv4s}"
+
+    networkdomain               = "${module.networkdomain.id}"
+}
+module "dns" {
+    source                      = "./network/dns/aws"
+
+    cluster_short_name          = "${var.cluster_short_name}"
+    domain_name                 = "${var.subdomain_name}.${var.domain_name}"
+    hosted_zone_id              = "${var.aws_hosted_zone_id}"
+
+    control_count               = "${var.control_count}"
+    control_ips                 = "${module.control-nodes.ipv4s}"
+    control_public_ips          = "${module.public-ips.control_public_ipv4s}"
+    
+    edge_count                  = "${var.edge_count}"
+    edge_ips                    = "${module.edge-nodes.ipv4s}"
+    edge_public_ips             = "${module.public-ips.edge_public_ipv4s}"
+
+    worker_count                = "${var.worker_count}"
+    worker_ips                  = "${module.worker-nodes.ipv4s}"
+
+    kubeworker_count            = "${var.kubeworker_count}"
+    kubeworker_ips              = "${module.kubeworker-nodes.ipv4s}"
 }
 
 ###############

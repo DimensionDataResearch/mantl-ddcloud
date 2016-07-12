@@ -4,9 +4,10 @@ variable "role" {}
 variable "name" {}
 variable "description" {}
 variable "auto_start" { default = false }
+variable "memory_gb" { default = 8 }
+variable "data_disk_size_gb" { default = 5 }
 variable "networkdomain" {}
 variable "vlan" {}
-variable "data_disk_size" { default = 5 }
 variable "ipv4_base" {}
 variable "ipv4_start" {}
 variable "admin_password" {
@@ -24,12 +25,13 @@ resource "ddcloud_server" "server" {
     admin_password          = "${var.admin_password}"
     auto_start              = "${var.auto_start}"
 
-    memory_gb               = 8
+    memory_gb               = "${var.memory_gb}"
 
     # Data disk
     additional_disk {
         scsi_unit_id        = 1
-        size_gb             = "${data_disk_size}"
+        size_gb             = "${var.data_disk_size_gb}"
+        speed               = "STANDARD"
     }
 
     networkdomain           = "${var.networkdomain}"
