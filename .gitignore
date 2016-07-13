@@ -10,3 +10,6 @@ credentials.tf
 
 # Generated plans
 *.plan
+
+# Generated inventory
+ddcloud.inventory

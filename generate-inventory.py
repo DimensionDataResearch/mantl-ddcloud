@@ -48,10 +48,7 @@ def get_outputs(module):
 all_modules = get_modules(
     load_json("./terraform/terraform.tfstate")
 )
-nat_map = {
-    resource['primary']['attributes']['private_ipv4']: resource['primary']['attributes']['public_ipv4']
-    for resource in get_resources(all_modules['public-ips'], 'ddcloud_nat')
-}
+nat_map = get_nat_map(all_modules)
 module_outputs = {
     module_name: get_outputs(all_modules[module_name]) for module_name in all_modules
 }
@@ -89,7 +86,10 @@ for module_name in sorted(module_outputs.keys()):
     else:
         print("consul_is_server=false")
     print("lvm_physical_device=/dev/sdb1")
+    print("provider=ddcloud")
     print()
+
+# TODO: Group servers by data center. 
 
 print("[dc=dc1]")
 for server_name in sorted(all_server_names):

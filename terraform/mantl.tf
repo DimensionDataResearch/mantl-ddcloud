@@ -198,9 +198,11 @@ module "dns" {
 
     worker_count                = "${var.worker_count}"
     worker_ips                  = "${module.worker-nodes.ipv4s}"
+    worker_public_ips           = "${module.public-ips.worker_public_ipv4s}"
 
     kubeworker_count            = "${var.kubeworker_count}"
     kubeworker_ips              = "${module.kubeworker-nodes.ipv4s}"
+    kubeworker_public_ips       = "${module.public-ips.kubeworker_public_ipv4s}"
 }
 
 ###############
