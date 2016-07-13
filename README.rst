@@ -12,7 +12,7 @@ Requirements
 * Python 2.7
 * Ansible 1.8 or higher (run ``pip install -r mantl/requirements.txt``).
 * Terraform 0.7-rc2 or higher.
-* The ddcloud provider for Terraform.
+* The `ddcloud provider <http://https://github.com/DimensionDataResearch/dd-cloud-compute-terraform>`_ for Terraform.
 * An AWS hosted DNS zone.
 * AWS credentials that can manage entries in that zone.
 * CloudControl credentials.
