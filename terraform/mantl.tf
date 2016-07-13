@@ -8,6 +8,12 @@ variable "datacenter" { default = "AU10" }
 # A short name for the Mantl cluster. 
 variable "cluster_short_name" { default = "mantl" }
 
+# The Consul data center identifier for the data center where Mantl is being deployed. 
+variable "consul_dc" { default = "mantl-au10" }
+
+# In addition to HTTPS, allow HTTP connections to the edge servers?
+variable "edge_insecure" { default = true }
+
 # The top-level domain name to use.
 variable "domain_name" { default = "tintoy-mantl.net" }
 
@@ -27,7 +33,7 @@ variable "cluster_vlan_address_start" { default = 20 }
 variable "server_auto_start" { default = true }
 
 # The size of the data volume for all deployed servers in the cluster (should be consistent across nodes, according to Mantl documentation).
-variable "data_disk_size_gb" { default = 20 }
+variable "data_disk_size_gb" { default = 50 }
 
 # The initial root password for machines in the cluster (later, we'll use this password to connect via SSH and switch to using a key file).
 variable "cluster_initial_root_password" { default = "sn4uSag3s!" }
@@ -65,6 +71,7 @@ module "control-nodes" {
     count               = "${var.control_count}"
 
     role                = "control"
+    consul_dc           = "${var.consul_dc}"
     name                = "${var.cluster_short_name}"
     description         = "Control node {} for ${var.cluster_short_name} cluster."
     admin_password      = "${var.cluster_initial_root_password}"
@@ -83,6 +90,7 @@ module "edge-nodes" {
     count               = "${var.edge_count}"
 
     role                = "edge"
+    consul_dc           = "${var.consul_dc}"
     name                = "${var.cluster_short_name}"
     description         = "Edge node {} for ${var.cluster_short_name} cluster."
     admin_password      = "${var.cluster_initial_root_password}"
@@ -101,6 +109,7 @@ module "worker-nodes" {
     count               = "${var.worker_count}"
 
     role                = "worker"
+    consul_dc           = "${var.consul_dc}"
     name                = "${var.cluster_short_name}"
     description         = "Worker node {} for ${var.cluster_short_name} cluster."
     admin_password      = "${var.cluster_initial_root_password}"
@@ -119,6 +128,7 @@ module "kubeworker-nodes" {
     count               = "${var.kubeworker_count}"
 
     role                = "kubeworker"
+    consul_dc           = "${var.consul_dc}"
     name                = "${var.cluster_short_name}"
     description         = "Kubernetes worker node {} for ${var.cluster_short_name} cluster."
     admin_password      = "${var.cluster_initial_root_password}"

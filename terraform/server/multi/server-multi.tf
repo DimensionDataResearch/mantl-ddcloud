@@ -1,6 +1,7 @@
 # Inputs
 variable "count" {}
 variable "role" {}
+variable "consul_dc" {}
 variable "name" {}
 variable "description" {}
 variable "auto_start" { default = false }
@@ -45,6 +46,12 @@ resource "ddcloud_server" "server" {
 }
 
 # Outputs
+output "role" {
+    value       = "${var.role}"
+}
+output "consul_dc" {
+    value       = "${var.consul_dc}"
+}
 output "ids" {
     value       = "${join(",", ddcloud_server.server.*.id)}"
 }
@@ -57,5 +64,3 @@ output "ipv4s" {
 output "ipv6s" {
     value       = "${join(",", ddcloud_server.server.*.primary_adapter_ipv6)}"
 }
-
-

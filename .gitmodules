@@ -1,0 +1,3 @@
+[submodule "mantl"]
+	path = mantl
+	url = https://github.com/DimensionDataResearch/mantl.git

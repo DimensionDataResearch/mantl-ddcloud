@@ -1,0 +1,47 @@
+[role=control]
+mantl-control-01 private_ipv4=192.168.17.20 public_ipv4=168.128.53.151 ansible_ssh_host=168.128.53.151
+mantl-control-02 private_ipv4=192.168.17.21 public_ipv4=168.128.53.150 ansible_ssh_host=168.128.53.150
+mantl-control-03 private_ipv4=192.168.17.22 public_ipv4=168.128.53.152 ansible_ssh_host=168.128.53.152
+
+[role=control:vars]
+consul_is_server=true
+lvm_physical_device=/dev/sdb1
+
+[role=edge]
+mantl-edge-01 private_ipv4=192.168.17.25 public_ipv4=168.128.53.148 ansible_ssh_host=168.128.53.148
+mantl-edge-02 private_ipv4=192.168.17.26 public_ipv4=168.128.53.149 ansible_ssh_host=168.128.53.149
+
+[role=edge:vars]
+consul_is_server=false
+lvm_physical_device=/dev/sdb1
+
+[role=kubeworker]
+mantl-kubeworker-01 private_ipv4=192.168.17.35 public_ipv4=168.128.53.143 ansible_ssh_host=168.128.53.143
+mantl-kubeworker-02 private_ipv4=192.168.17.36 public_ipv4=168.128.53.142 ansible_ssh_host=168.128.53.142
+
+[role=kubeworker:vars]
+consul_is_server=false
+lvm_physical_device=/dev/sdb1
+
+[role=worker]
+mantl-worker-01 private_ipv4=192.168.17.30 public_ipv4=168.128.53.145 ansible_ssh_host=168.128.53.145
+mantl-worker-02 private_ipv4=192.168.17.31 public_ipv4=168.128.53.144 ansible_ssh_host=168.128.53.144
+mantl-worker-03 private_ipv4=192.168.17.32 public_ipv4=168.128.53.146 ansible_ssh_host=168.128.53.146
+mantl-worker-04 private_ipv4=192.168.17.33 public_ipv4=168.128.53.147 ansible_ssh_host=168.128.53.147
+
+[role=worker:vars]
+consul_is_server=false
+lvm_physical_device=/dev/sdb1
+
+[dc=dc1]
+mantl-control-01
+mantl-control-02
+mantl-control-03
+mantl-edge-01
+mantl-edge-02
+mantl-kubeworker-01
+mantl-kubeworker-02
+mantl-worker-01
+mantl-worker-02
+mantl-worker-03
+mantl-worker-04
