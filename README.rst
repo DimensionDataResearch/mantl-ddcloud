@@ -21,5 +21,5 @@ Requirements
 Getting started
 ---------------
 
-You'll want to customise `<terraform/mantl.tf>`_ and `<mantl.yaml>`_ with the correct values for your configuration.
+You'll want to customise `<terraform/mantl.tf>`_ and `<mantl.yml>`_ with the correct values for your configuration.
 Run ``build-cluster-step1.sh`` and follow the instructions.
