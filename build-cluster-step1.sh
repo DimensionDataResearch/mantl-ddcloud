@@ -9,4 +9,4 @@ terraform plan -out ./terraform.plan
 terraform apply ./terraform.plan
 popd
 
-echo "Step 1 of 4 complete - update 'ddcloud.inventory' file with server names and IPs, then run build-cluster-step2.sh"
+echo "Step 1 of 4 complete - wait for boot and then run build-cluster-step2.sh to continue."
