@@ -1,0 +1,6 @@
+---
+elasticsearch_ram: 512
+elasticsearch_executor_ram: 512
+elasticsearch_cpu: 0.5
+elasticsearch_executor_cpu: 0.5
+elasticsearch_nodes: 2

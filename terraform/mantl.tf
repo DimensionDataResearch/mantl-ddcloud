@@ -9,7 +9,7 @@ variable "datacenter" { default = "AU10" }
 variable "cluster_short_name" { default = "mantl" }
 
 # The Consul data center identifier for the data center where Mantl is being deployed. 
-variable "consul_dc" { default = "mantl-au10" }
+variable "consul_dc" { default = "dc1" }
 
 # In addition to HTTPS, allow HTTP connections to the edge servers?
 variable "edge_insecure" { default = true }
