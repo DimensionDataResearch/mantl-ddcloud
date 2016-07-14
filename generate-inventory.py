@@ -85,6 +85,8 @@ for module_name in sorted(module_outputs.keys()):
         print("consul_is_server=true")
     else:
         print("consul_is_server=false")
+    print("docker_lvm_backed=true")
+    print('docker_lvm_data_volume_size="80%FREE"')
     print("lvm_physical_device=/dev/sdb1")
     print("provider=ddcloud")
     print()
