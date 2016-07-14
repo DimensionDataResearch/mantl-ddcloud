@@ -88,7 +88,7 @@ for module_name in sorted(module_outputs.keys()):
     print("docker_lvm_backed=true")
     print('docker_lvm_data_volume_size="80%FREE"')
     print("lvm_physical_device=/dev/sdb1")
-    print("provider=ddcloud")
+    print("provider=bare-metal") # For now it's easier to ask Mantl to treat us as a bare-metal install.
     print()
 
 # TODO: Group servers by data center. 
