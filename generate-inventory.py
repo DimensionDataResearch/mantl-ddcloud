@@ -87,7 +87,7 @@ for module_name in sorted(module_outputs.keys()):
         print("consul_is_server=false")
     print("docker_lvm_backed=true")
     print('docker_lvm_data_volume_size="80%FREE"')
-    print("lvm_physical_device=/dev/sdb1")
+    print("lvm_physical_device=/dev/sdc1")
     print("provider=bare-metal") # For now it's easier to ask Mantl to treat us as a bare-metal install.
     print()
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Step 4 of 4 - installing mantl..."
+echo "Step 4 of 5 - upgrading packages..."
 
 cp ./ddcloud.inventory ./mantl/ddcloud.inventory
 cp ./mantl.yml ./mantl/mantl.yml
@@ -22,16 +22,8 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-# TODO: Ensure nodes were rebooted after upgrade.
-ansible-playbook -u root -i ./ddcloud.inventory -e consul_dc=dc1 -e @security.yml ./mantl.yml
-if [[ $? -ne 0 ]]; then
-    echo "Failed to deploy Mantl (one or more deployment actions failed)."
-
-    popd
-    exit 1
-fi
-
-echo "Step 4 of 4 complete"
+echo "Expect errors from the next command since we're rebooting the target servers."
+ansible all -u root -i ./ddcloud.inventory -e 'ignore_errors=true' -a 'nohup bash -c "sleep 2s && reboot" &'
 
 popd
 

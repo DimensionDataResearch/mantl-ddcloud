@@ -3,7 +3,7 @@ provider "ddcloud" {
 }
 
 # The target data centre in which Mantl will be deployed.
-variable "datacenter" { default = "AU10" }
+variable "datacenter" { default = "AU9" }
 
 # A short name for the Mantl cluster. 
 variable "cluster_short_name" { default = "mantl" }
@@ -32,33 +32,36 @@ variable "cluster_vlan_address_start" { default = 20 }
 # Automatically start servers after they are deployed?
 variable "server_auto_start" { default = true }
 
-# The size of the data volume for all deployed servers in the cluster (should be consistent across nodes, according to Mantl documentation).
+# The size of the data volume for all deployed servers in the cluster (the root file system will be extended onto it).
 variable "data_disk_size_gb" { default = 50 }
+
+# The size of the Docker volume for all deployed servers in the cluster (should be consistent across nodes, according to Mantl documentation).
+variable "docker_disk_size_gb" { default = 50 }
 
 # The initial root password for machines in the cluster (later, we'll use this password to connect via SSH and switch to using a key file).
 variable "cluster_initial_root_password" { default = "sn4uSag3s!" }
 
 # Control nodes.
 variable "control_count" { default = 3 }
-variable "control_cpu_count" { default = 2 }
+variable "control_cpu_count" { default = 4 }
 variable "control_memory_gb" { default = 8 }
 variable "control_address_start" { default = 0 }        # Added to cluster_vlan_address_start
 
 # Edge (public-facing) nodes.
 variable "edge_count" { default = 2 }
-variable "edge_cpu_count" { default = 2 }
+variable "edge_cpu_count" { default = 4 }
 variable "edge_memory_gb" { default = 6 }
 variable "edge_address_start" { default = 5 }
 
 # Worker nodes.
 variable "worker_count" { default = 4 }
-variable "worker_cpu_count" { default = 2 }
+variable "worker_cpu_count" { default = 4 }
 variable "worker_memory_gb" { default = 8 }
 variable "worker_address_start" { default = 10 }        # Added to cluster_vlan_address_start
 
 # Kubernetes worker nodes.
 variable "kubeworker_count" { default = 2 }
-variable "kubeworker_cpu_count" { default = 2 }
+variable "kubeworker_cpu_count" { default = 4 }
 variable "kubeworker_memory_gb" { default = 8 }
 variable "kubeworker_address_start" { default = 15 }    # Added to cluster_vlan_address_start
 
@@ -78,7 +81,9 @@ module "control-nodes" {
     auto_start          = "${var.server_auto_start}"
 
     memory_gb           = "${var.control_memory_gb}"
+    cpu_count           = "${var.control_cpu_count}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
+    docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -97,7 +102,9 @@ module "edge-nodes" {
     auto_start          = "${var.server_auto_start}"
 
     memory_gb           = "${var.edge_memory_gb}"
+    cpu_count           = "${var.edge_cpu_count}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
+    docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -116,7 +123,9 @@ module "worker-nodes" {
     auto_start          = "${var.server_auto_start}"
 
     memory_gb           = "${var.worker_memory_gb}"
+    cpu_count           = "${var.worker_cpu_count}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
+    docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -135,7 +144,9 @@ module "kubeworker-nodes" {
     auto_start          = "${var.server_auto_start}"
 
     memory_gb           = "${var.kubeworker_memory_gb}"
+    cpu_count           = "${var.kubeworker_cpu_count}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
+    docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -172,6 +183,7 @@ module "public-ips" {
 
     edge_count                  = "${var.edge_count}"
     edge_private_ipv4s          = "${module.edge-nodes.ipv4s}"
+    edge_insecure               = "${var.edge_insecure}"
 
     worker_count                = "${var.worker_count}"
     worker_private_ipv4s        = "${module.worker-nodes.ipv4s}"
@@ -189,20 +201,16 @@ module "dns" {
     hosted_zone_id              = "${var.aws_hosted_zone_id}"
 
     control_count               = "${var.control_count}"
-    control_ips                 = "${module.control-nodes.ipv4s}"
-    control_public_ips          = "${module.public-ips.control_public_ipv4s}"
+    control_ips                 = "${module.public-ips.control_public_ipv4s}"
     
     edge_count                  = "${var.edge_count}"
-    edge_ips                    = "${module.edge-nodes.ipv4s}"
-    edge_public_ips             = "${module.public-ips.edge_public_ipv4s}"
+    edge_ips                    = "${module.public-ips.edge_public_ipv4s}"
 
     worker_count                = "${var.worker_count}"
-    worker_ips                  = "${module.worker-nodes.ipv4s}"
-    worker_public_ips           = "${module.public-ips.worker_public_ipv4s}"
+    worker_ips                  = "${module.public-ips.worker_public_ipv4s}"
 
     kubeworker_count            = "${var.kubeworker_count}"
-    kubeworker_ips              = "${module.kubeworker-nodes.ipv4s}"
-    kubeworker_public_ips       = "${module.public-ips.kubeworker_public_ipv4s}"
+    kubeworker_ips              = "${module.public-ips.kubeworker_public_ipv4s}"
 }
 
 ###############

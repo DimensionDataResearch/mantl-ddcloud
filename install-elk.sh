@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "Installing ELK stack..."
+echo "Deploying ELK stack..."
 
 pushd ./mantl
 ansible-playbook -u root -i ./ddcloud.inventory -e consul_dc=dc1 -e @../elasticsearch.yml -e @security.yml ./addons/elk.yml
 if [[ $? -ne 0 ]]; then
-    echo "Failed to deploy Mantl (security configuration is invalid)."
+    echo "Failed to deploy ELK stack."
 
     popd
     exit 1

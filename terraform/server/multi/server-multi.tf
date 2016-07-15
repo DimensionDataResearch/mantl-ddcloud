@@ -6,7 +6,9 @@ variable "name" {}
 variable "description" {}
 variable "auto_start" { default = false }
 variable "memory_gb" { default = 8 }
-variable "data_disk_size_gb" { default = 5 }
+variable "cpu_count" { default = 2 }
+variable "data_disk_size_gb" { default = 10 }
+variable "docker_disk_size_gb" { default = 10 }
 variable "networkdomain" {}
 variable "vlan" {}
 variable "ipv4_base" {}
@@ -27,11 +29,19 @@ resource "ddcloud_server" "server" {
     auto_start              = "${var.auto_start}"
 
     memory_gb               = "${var.memory_gb}"
+    cpu_count               = "${var.cpu_count}"
 
-    # Data disk
+    # Data disk (/dev/sdb)
     additional_disk {
         scsi_unit_id        = 1
         size_gb             = "${var.data_disk_size_gb}"
+        speed               = "STANDARD"
+    }
+
+    # Docker disk (/dev/sdc)
+    additional_disk {
+        scsi_unit_id        = 2
+        size_gb             = "${var.docker_disk_size_gb}"
         speed               = "STANDARD"
     }
 
