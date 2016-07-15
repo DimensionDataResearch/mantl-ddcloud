@@ -34,7 +34,7 @@ resource "ddcloud_nat" "control-node-public-ip" {
 }
 resource "ddcloud_firewall_rule" "control-node-https4-in" {
     count                   = "${var.control_count}"
-	name 					= "control${count.index}.httsp4.inbound"
+	name 					= "control${count.index}.https4.inbound"
 	placement				= "first"
 	action					= "accept" # Valid values are "accept" or "drop."
 	enabled					= true
@@ -85,7 +85,6 @@ resource "ddcloud_firewall_rule" "edge-node-http4-in" {
 
 	networkdomain 			= "${var.networkdomain}"
 }
-
 
 # Worker nodes
 resource "ddcloud_nat" "worker-node-public-ip" {
