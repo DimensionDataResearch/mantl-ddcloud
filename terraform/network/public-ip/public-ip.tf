@@ -15,7 +15,7 @@ resource "ddcloud_firewall_rule" "all-nodes-ssh4-in" {
 	name 					= "ssh4.inbound"
 	placement				= "first"
 	action					= "accept" # Valid values are "accept" or "drop."
-	enabled					= true
+	enabled					= false
 	
 	ip_version				= "ipv4"
 	protocol				= "tcp"
