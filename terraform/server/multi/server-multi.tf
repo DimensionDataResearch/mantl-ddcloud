@@ -53,6 +53,15 @@ resource "ddcloud_server" "server" {
     dns_secondary           = "8.8.4.4"
 
     osimage_name            = "CentOS 7 64-bit 2 CPU"
+
+    tag {
+        name  = "role"
+        value = "${var.role}"
+    }
+    tag {
+        name  = "consul_dc"
+        value = "${var.consul_dc}"
+    }
 }
 
 # Outputs

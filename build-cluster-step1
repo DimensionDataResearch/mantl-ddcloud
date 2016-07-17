@@ -1,0 +1,17 @@
+
+#!/bin/bash
+
+echo "Step 1 of 4 - running Terraform to create cluster infrastructure..."
+
+pushd ./terraform
+terraform get -update
+terraform apply
+if [[ $? -ne 0 ]]; then
+    echo "Failed to deploy Mantl (unable provision required infrastructure)."
+
+    exit 1
+fi
+
+popd
+
+echo "Step 1 of 4 complete - wait for boot and then run build-cluster-step2 to continue."

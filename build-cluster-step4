@@ -22,9 +22,9 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-echo "Expect errors from the next command since we're rebooting the target servers."
+echo "Expect errors from the next command since we're rebooting the target servers..."
 ansible all -u root -i ./ddcloud.inventory -e 'ignore_errors=true' -a 'nohup bash -c "sleep 2s && reboot" &'
 
 popd
 
-echo "Done"
+echo "Step 4 of 5 complete - wait for reboots and then run build-cluster-step5"

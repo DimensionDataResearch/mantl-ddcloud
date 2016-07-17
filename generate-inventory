@@ -54,6 +54,7 @@ module_outputs = {
 }
 
 all_server_names = set()
+server_names_by_consul_dc = dict()
 for module_name in sorted(module_outputs.keys()):
     module_output = module_outputs[module_name]
 
@@ -61,6 +62,13 @@ for module_name in sorted(module_outputs.keys()):
         role_name = module_output['role']
     except KeyError:
         continue
+
+    consul_dc = module_output['consul_dc']
+    try:
+        server_names_for_consul_dc = server_names_by_consul_dc[consul_dc] 
+    except KeyError:
+        server_names_for_consul_dc = []
+        server_names_by_consul_dc[consul_dc] = server_names_for_consul_dc 
 
     print("[role={}]".format(role_name))
 
@@ -72,9 +80,12 @@ for module_name in sorted(module_outputs.keys()):
 
     for host_index in range(len(names)):
         all_server_names.add(names[host_index])
+        host_name = names[host_index]
+        server_names_for_consul_dc.append(host_name)
 
-        print("{name} private_ipv4={private_ipv4} public_ipv4={public_ipv4} ansible_ssh_host={public_ipv4}".format(
-            name=names[host_index],
+        print("{name} consul_dc={consul_dc} private_ipv4={private_ipv4} public_ipv4={public_ipv4} ansible_ssh_host={public_ipv4}".format(
+            name=host_name,
+            consul_dc = consul_dc,
             private_ipv4=private_ipv4s[host_index],
             public_ipv4=nat_map[private_ipv4s[host_index]]
         ))
@@ -91,8 +102,10 @@ for module_name in sorted(module_outputs.keys()):
     print("provider=bare-metal") # For now it's easier to ask Mantl to treat us as a bare-metal install.
     print()
 
-# TODO: Group servers by data center. 
-
-print("[dc=dc1]")
-for server_name in sorted(all_server_names):
-    print(server_name)
+# TODO: Group servers by data center.
+for dc_name in server_names_by_consul_dc.keys():
+    print("[dc={dc_name}]".format(
+        dc_name=dc_name
+    ))
+    for server_name in sorted(server_names_by_consul_dc[dc_name]):
+        print(server_name)
