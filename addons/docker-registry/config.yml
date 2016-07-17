@@ -1,0 +1,26 @@
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+  cache:
+    blobdescriptor: inmemory
+  s3:
+    accesskey: YOUR_KEY_HERE
+    secretkey: YOUR_SECRET_KEY_HERE
+    region: us-west-2
+
+    bucket: tintoy-mantl-dev-au9
+    rootdirectory: registry
+http:
+  addr: :5000
+  tls:
+    certificate: /certs/cert
+    key: /certs/key
+  headers:
+    X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3

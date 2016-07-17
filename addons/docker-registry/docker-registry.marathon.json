@@ -33,7 +33,7 @@
     ]
   },
   "labels": {
-    "traefik.frontend.entryPoints": "http",
+    "traefik.frontend.entryPoints": "http,https",
     "traefik.backend": "registry",
     "traefik.frontend.rule": "Host:registry.dev.tintoy-mantl.net"
   },
