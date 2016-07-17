@@ -1,0 +1,27 @@
+port = ":80"
+graceTimeOut = 10
+logLevel = "ERROR"
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+  [entryPoints.https]
+  address = ":443"
+
+    [entryPoints.https.tls]
+      [[entryPoints.https.tls.certificates]]
+      CertFile = "/etc/pki/mantl/cert"
+      KeyFile = "/etc/pki/mantl/key"
+
+[web]
+address = ":8081"
+CertFile = "/etc/pki/mantl/cert"
+KeyFile = "/etc/pki/mantl/key"
+
+[marathon]
+endpoint = "http://marathon.service.consul:18080"
+domain = "dev.tintoy-mantl.net"
+watch = true
+networkInterface = "ens32"
+ExposedByDefault = true
