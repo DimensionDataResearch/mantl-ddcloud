@@ -3,11 +3,12 @@ variable "control_count" {}
 variable "control_private_ipv4s" {}
 variable "edge_count" {}
 variable "edge_private_ipv4s" {}
-variable "edge_insecure" { default = false }
 variable "worker_count" {}
 variable "worker_private_ipv4s" {}
 variable "kubeworker_count" {}
 variable "kubeworker_private_ipv4s" {}
+variable "expose_servers" { default = false }
+variable "expose_edge_insecure" { default = false }
 variable "networkdomain" {}
 
 # Allow SSH for all machines
@@ -15,7 +16,7 @@ resource "ddcloud_firewall_rule" "all-nodes-ssh4-in" {
 	name 					= "ssh4.inbound"
 	placement				= "first"
 	action					= "accept" # Valid values are "accept" or "drop."
-	enabled					= false
+	enabled					= "${var.expose_servers}"
 	
 	ip_version				= "ipv4"
 	protocol				= "tcp"
@@ -37,7 +38,7 @@ resource "ddcloud_firewall_rule" "control-node-https4-in" {
 	name 					= "control${count.index}.https4.inbound"
 	placement				= "first"
 	action					= "accept" # Valid values are "accept" or "drop."
-	enabled					= true
+	enabled					= "${var.expose_servers}"
 	
 	ip_version				= "ipv4"
 	protocol				= "tcp"
@@ -60,7 +61,7 @@ resource "ddcloud_firewall_rule" "edge-node-https4-in" {
 	name 					= "edge${count.index}.https4.inbound"
 	placement				= "first"
 	action					= "accept" # Valid values are "accept" or "drop."
-	enabled					= true
+	enabled					= "${var.expose_servers}"
 	
 	ip_version				= "ipv4"
 	protocol				= "tcp"
@@ -75,7 +76,7 @@ resource "ddcloud_firewall_rule" "edge-node-http4-in" {
 	name 					= "edge${count.index}.http4.inbound"
 	placement				= "first"
 	action					= "accept" # Valid values are "accept" or "drop."
-	enabled					= "${var.edge_insecure}"
+	enabled					= "${var.expose_edge_insecure}"
 	
 	ip_version				= "ipv4"
 	protocol				= "tcp"

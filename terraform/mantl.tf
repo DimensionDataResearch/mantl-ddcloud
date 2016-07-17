@@ -11,8 +11,11 @@ variable "cluster_short_name" { default = "mantl" }
 # The Consul data center identifier for the data center where Mantl is being deployed. 
 variable "consul_dc" { default = "dc1" }
 
+# Expose servers via public IP addresses (enable firewall ingress rules)?
+variable "expose_servers" { default = false }
+
 # In addition to HTTPS, allow HTTP connections to the edge servers?
-variable "edge_insecure" { default = true }
+variable "expose_edge_insecure" { default = false }
 
 # The top-level domain name to use.
 variable "domain_name" { default = "tintoy-mantl.net" }
@@ -183,13 +186,15 @@ module "public-ips" {
 
     edge_count                  = "${var.edge_count}"
     edge_private_ipv4s          = "${module.edge-nodes.ipv4s}"
-    edge_insecure               = "${var.edge_insecure}"
 
     worker_count                = "${var.worker_count}"
     worker_private_ipv4s        = "${module.worker-nodes.ipv4s}"
 
     kubeworker_count            = "${var.kubeworker_count}"
     kubeworker_private_ipv4s    = "${module.kubeworker-nodes.ipv4s}"
+
+    expose_servers              = "${var.expose_servers}"
+    expose_edge_insecure        = "${var.expose_edge_insecure}"
 
     networkdomain               = "${module.networkdomain.id}"
 }

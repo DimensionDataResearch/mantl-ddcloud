@@ -2,7 +2,11 @@
 
 echo "Destroying all cluster nodes..."
 pushd ./terraform
-terraform destroy -target=module.control-nodes.ddcloud_server.server -target=module.worker-nodes.ddcloud_server.server -target=module.kubeworker-nodes.ddcloud_server.server -target=module.edge-nodes.ddcloud_server.server
+terraform destroy \
+	-target=module.control-nodes.ddcloud_server.server \
+	-target=module.worker-nodes.ddcloud_server.server \
+	-target=module.kubeworker-nodes.ddcloud_server.server \
+	-target=module.edge-nodes.ddcloud_server.server
 if [[ $? -ne 0 ]]; then
     echo "Failed to destroy one or more cluster nodes."
 
