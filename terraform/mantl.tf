@@ -41,6 +41,9 @@ variable "data_disk_size_gb" { default = 50 }
 # The size of the Docker volume for all deployed servers in the cluster (should be consistent across nodes, according to Mantl documentation).
 variable "docker_disk_size_gb" { default = 50 }
 
+# The size of the GlusterFS volume for all control and worker servers in the cluster (should be consistent across nodes, according to Mantl documentation).
+variable "glusterfs_disk_size_gb" { default = 20 }
+
 # The initial root password for machines in the cluster (later, we'll use this password to connect via SSH and switch to using a key file).
 variable "cluster_initial_root_password" { default = "sn4uSag3s!" }
 
@@ -73,7 +76,7 @@ variable "kubeworker_address_start" { default = 15 }    # Added to cluster_vlan_
 #########
 
 module "control-nodes" {
-    source              = "./server/multi"
+    source              = "./server/multi/with-extra-disk"
     count               = "${var.control_count}"
 
     role                = "control"
@@ -87,6 +90,7 @@ module "control-nodes" {
     cpu_count           = "${var.control_cpu_count}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
     docker_disk_size_gb = "${var.docker_disk_size_gb}"
+    extra_disk_size_gb  = "${var.glusterfs_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"
@@ -115,7 +119,7 @@ module "edge-nodes" {
     ipv4_start          = "${var.cluster_vlan_address_start + var.edge_address_start}"
 }
 module "worker-nodes" {
-    source              = "./server/multi"
+    source              = "./server/multi/with-extra-disk"
     count               = "${var.worker_count}"
 
     role                = "worker"
@@ -129,6 +133,7 @@ module "worker-nodes" {
     cpu_count           = "${var.worker_cpu_count}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
     docker_disk_size_gb = "${var.docker_disk_size_gb}"
+    extra_disk_size_gb  = "${var.glusterfs_disk_size_gb}"
 
     networkdomain       = "${module.networkdomain.id}"
     vlan                = "${module.vlan.id}"

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "Deploying GlusterFS..."
+
+pushd ./mantl
+ansible-playbook -u root -i ./ddcloud.inventory -e consul_dc=dc1 -e volume_group_name=sdd -e @security.yml ./addons/glusterfs.yml
+if [[ $? -ne 0 ]]; then
+    echo "Failed to deploy GlusterFS."
+
+    popd
+    exit 1
+fi
+
+echo "Done."
+popd
