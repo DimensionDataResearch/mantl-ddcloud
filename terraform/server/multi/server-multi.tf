@@ -7,6 +7,7 @@ variable "description" {}
 variable "auto_start" { default = false }
 variable "memory_gb" { default = 8 }
 variable "cpu_count" { default = 2 }
+variable "os_disk_size_gb" { default = 15 }
 variable "data_disk_size_gb" { default = 10 }
 variable "docker_disk_size_gb" { default = 10 }
 variable "networkdomain" {}
@@ -31,15 +32,25 @@ resource "ddcloud_server" "server" {
     memory_gb               = "${var.memory_gb}"
     cpu_count               = "${var.cpu_count}"
 
+    # OS disk (/dev/sda) - expand to ${var.os_disk_size_gb}.
+    #
+    # AF: Disabled until deploying scripts have been updated to remove references to extra data volume).
+    #
+    # disk {
+    #     scsi_unit_id      = 0
+    #     size_gb           = "${var.os_disk_size_gb}"
+    #     speed             = "STANDARD"
+    # }
+
     # Data disk (/dev/sdb)
-    additional_disk {
+    disk {
         scsi_unit_id        = 1
         size_gb             = "${var.data_disk_size_gb}"
         speed               = "STANDARD"
     }
 
     # Docker disk (/dev/sdc)
-    additional_disk {
+    disk {
         scsi_unit_id        = 2
         size_gb             = "${var.docker_disk_size_gb}"
         speed               = "STANDARD"

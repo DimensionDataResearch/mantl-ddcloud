@@ -35,6 +35,9 @@ variable "cluster_vlan_address_start" { default = 20 }
 # Automatically start servers after they are deployed?
 variable "server_auto_start" { default = true }
 
+# The size of the OS (root) volume for all deployed servers in the cluster.
+variable "os_disk_size_gb" { default = 20 }
+
 # The size of the data volume for all deployed servers in the cluster (the root file system will be extended onto it).
 variable "data_disk_size_gb" { default = 50 }
 
@@ -85,6 +88,7 @@ module "control-nodes" {
 
     memory_gb           = "${var.control_memory_gb}"
     cpu_count           = "${var.control_cpu_count}"
+    os_disk_size_gb     = "${var.os_disk_size_gb}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
     docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
@@ -106,6 +110,7 @@ module "edge-nodes" {
 
     memory_gb           = "${var.edge_memory_gb}"
     cpu_count           = "${var.edge_cpu_count}"
+    os_disk_size_gb     = "${var.os_disk_size_gb}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
     docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
@@ -127,6 +132,7 @@ module "worker-nodes" {
 
     memory_gb           = "${var.worker_memory_gb}"
     cpu_count           = "${var.worker_cpu_count}"
+    os_disk_size_gb     = "${var.os_disk_size_gb}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
     docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
@@ -148,6 +154,7 @@ module "kubeworker-nodes" {
 
     memory_gb           = "${var.kubeworker_memory_gb}"
     cpu_count           = "${var.kubeworker_cpu_count}"
+    os_disk_size_gb     = "${var.os_disk_size_gb}"
     data_disk_size_gb   = "${var.data_disk_size_gb}"
     docker_disk_size_gb = "${var.docker_disk_size_gb}"
 
