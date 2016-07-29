@@ -36,7 +36,8 @@ variable "cluster_vlan_address_start" { default = 20 }
 variable "server_auto_start" { default = true }
 
 # The size of the OS (root) volume for all deployed servers in the cluster.
-variable "os_disk_size_gb" { default = 20 }
+# AF: Don't change this until we've updated the deployment scripts to remove the call to vgextend for the root file system.
+variable "os_disk_size_gb" { default = 10 }
 
 # The size of the data volume for all deployed servers in the cluster (the root file system will be extended onto it).
 variable "data_disk_size_gb" { default = 50 }

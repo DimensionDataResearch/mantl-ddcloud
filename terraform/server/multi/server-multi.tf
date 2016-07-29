@@ -33,14 +33,11 @@ resource "ddcloud_server" "server" {
     cpu_count               = "${var.cpu_count}"
 
     # OS disk (/dev/sda) - expand to ${var.os_disk_size_gb}.
-    #
-    # AF: Disabled until deploying scripts have been updated to remove references to extra data volume).
-    #
-    # disk {
-    #     scsi_unit_id      = 0
-    #     size_gb           = "${var.os_disk_size_gb}"
-    #     speed             = "STANDARD"
-    # }
+    disk {
+        scsi_unit_id      = 0
+        size_gb           = "${var.os_disk_size_gb}"
+        speed             = "STANDARD"
+    }
 
     # Data disk (/dev/sdb)
     disk {
