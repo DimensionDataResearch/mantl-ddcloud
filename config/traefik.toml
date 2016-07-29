@@ -21,7 +21,7 @@ KeyFile = "/etc/pki/mantl/key"
 
 [marathon]
 endpoint = "http://marathon.service.consul:18080"
-domain = "dev.tintoy-mantl.net"
+domain = "au10.mantl.tintoy.io"
 watch = true
 networkInterface = "ens32"
 ExposedByDefault = true

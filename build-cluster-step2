@@ -1,7 +1,15 @@
 #!/bin/bash
 
-echo "Generating ddcloud.inventory..."
-./generate-inventory > ./ddcloud.inventory
+echo "Refreshing Terraform state to pick up public IPs..."
+pushd terraform
+terraform refresh
+if [[ $? -ne 0 ]]; then
+    echo "Failed to deploy Mantl (unable refresh Terraform state)."
+    popd
+
+    exit 1
+fi
+popd
 
 # Use SSH key file.
 echo "Step 1 of 5 - configuring cluster machines to use SSH keyfile (initial password can be found in mantl.tf)..."

@@ -3,10 +3,10 @@ provider "ddcloud" {
 }
 
 # The target data centre in which Mantl will be deployed.
-variable "datacenter" { default = "AU9" }
+variable "datacenter" { default = "AU10" }
 
 # A short name for the Mantl cluster. 
-variable "cluster_short_name" { default = "mantl" }
+variable "cluster_short_name" { default = "au10" }
 
 # The Consul data center identifier for the data center where Mantl is being deployed. 
 variable "consul_dc" { default = "dc1" }
@@ -18,16 +18,16 @@ variable "expose_servers" { default = false }
 variable "expose_edge_insecure" { default = false }
 
 # The top-level domain name to use.
-variable "domain_name" { default = "tintoy-mantl.net" }
+variable "domain_name" { default = "mantl.tintoy.io" }
 
 # The sub-domain name to use (services will appear as "*.subdomain_name.domain_name".
-variable "subdomain_name" { default = "dev" }
+variable "subdomain_name" { default = "au10" }
 
 # The AWS hosted zone Id associated with this domain.
-variable "aws_hosted_zone_id" { default = "Z1JI3N3D48XF25" }
+variable "aws_hosted_zone_id" { default = "ZOBD4EJVNNOC4" }
 
 # The cluster VLAN's base IP address (without the trailing ".0").
-variable "cluster_vlan_address_base" { default = "192.168.17" }
+variable "cluster_vlan_address_base" { default = "10.5.50" }
 
 # The last quad of the first IP address used by the cluster (i.e. without cluster_vlan_address_base).
 variable "cluster_vlan_address_start" { default = 20 }
@@ -172,15 +172,15 @@ module "kubeworker-nodes" {
 module "networkdomain" {
     source                      = "./network/networkdomain"
     
-    name                        = "Mantl"
-    description                 = "Mantl"
+    name                        = "Mantl2"
+    description                 = "Adam's Mantl demo"
     datacenter                  = "${var.datacenter}"
 }
 module "vlan" {
     source                      = "./network/vlan"
 
-    name                        = "Mantl primary VLAN"
-    description                 = "Primary VLAN for Mantl."
+    name                        = "Mantl2 primary VLAN"
+    description                 = "Primary VLAN for Mantl demo."
     base_address                = "${var.cluster_vlan_address_base}.0"
     prefix_size                 = 24
 

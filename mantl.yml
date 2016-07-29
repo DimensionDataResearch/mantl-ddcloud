@@ -17,6 +17,8 @@
     # consul_acl_datacenter: your_primary_datacenter
 
     consul_servers_group: role=control
+
+    traefik_marathon_domain: "au10.mantl.tintoy.io"
   roles:
     - common
     - certificates
@@ -46,12 +48,16 @@
   vars:
     mesos_mode: follower
     zookeeper_server_group: role=control
+
+    traefik_marathon_domain: "au10.mantl.tintoy.io"
   roles:
     - mesos
     - calico
 
 - hosts: role=kubeworker
   gather_facts: yes
+  vars:
+    traefik_marathon_domain: "au10.mantl.tintoy.io"
   roles:
     - calico
     - kubernetes
@@ -69,6 +75,8 @@
     mesos_leaders_group: role=control
     mesos_mode: leader
     zookeeper_server_group: role=control
+
+    traefik_marathon_domain: "au10.mantl.tintoy.io"
   roles:
     - vault
     - zookeeper
@@ -91,6 +99,6 @@
     #
     # For those migrating from haproxy, this variable serves the same purpose
     # and format as `haproxy_domain`.
-    traefik_marathon_domain: "dev.tintoy-mantl.net"
+    traefik_marathon_domain: "au10.mantl.tintoy.io"
   roles:
     - traefik

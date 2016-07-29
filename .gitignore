@@ -11,5 +11,5 @@ credentials.tf
 # Generated plans
 *.plan
 
-# Generated inventory
-ddcloud.inventory
+# Mac
+.DS_Store
