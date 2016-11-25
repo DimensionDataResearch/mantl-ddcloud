@@ -1,7 +1,7 @@
 Mantl integration for CloudControl
 ==================================
 
-This repository contains Mantl customisations required to run it on Dimension Data CloudControl. We're actually `working on merging this work back into the original Mantl repository <https://github.com/DimensionDataResearch/mantl>`_ but that's still a work-in-progress.
+This repository contains Mantl customisations required to run it on Dimension Data CloudControl. We're actually `working on merging this work back into the original Mantl repository <https://github.com/DimensionDataResearch/mantl/tree/ddcloud/initial>`_ but that's still a work-in-progress.
 
 I'll document this process when I get a chance; it works, but it's still a tiny bit manual for now.
 
