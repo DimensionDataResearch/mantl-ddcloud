@@ -1,7 +1,7 @@
 Mantl integration for CloudControl
 ==================================
 
-This repository contains Mantl customisations required to run it on Dimension Data CloudControl.
+This repository contains Mantl customisations required to run it on Dimension Data CloudControl. We're actually `working on merging this work back into the original Mantl repository <https://github.com/DimensionDataResearch/mantl>`_ but that's still a work-in-progress.
 
 I'll document this process when I get a chance; it works, but it's still a tiny bit manual for now.
 
@@ -12,7 +12,7 @@ Requirements
 * Python 2.7
 * Ansible 1.8 or higher (run ``pip install -r mantl/requirements.txt``).
 * Terraform 0.7-rc2 or higher.
-* The `ddcloud provider <http://https://github.com/DimensionDataResearch/dd-cloud-compute-terraform>`_ for Terraform.
+* The `ddcloud provider <https://github.com/DimensionDataResearch/dd-cloud-compute-terraform>`_ for Terraform.
 * An AWS hosted DNS zone.
 * AWS credentials that can manage entries in that zone.
 * CloudControl credentials.
